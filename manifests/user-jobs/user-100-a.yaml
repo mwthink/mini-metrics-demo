@@ -1,0 +1,30 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: user-100-job-a
+  labels:
+    user-id: "100"
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    metadata:
+      labels:
+        user-id: "100"
+    spec:
+      template:
+        metadata:
+          labels:
+            user-id: "100"
+        spec:
+          containers:
+          # prints the date, then sleeps 1-10 seconds
+          - name: date-echo
+            image: alpine:latest
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/sh","-c"]
+            args:
+            - |-
+              SLEEP_TIME=$(( ( RANDOM % 10 )  + 1 ))
+              date
+              sleep $SLEEP_TIME
+          restartPolicy: Never
